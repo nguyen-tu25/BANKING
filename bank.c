@@ -111,6 +111,23 @@ void undoDeposit(Account* account)
     }
 }
 
+// Function to transfer money between two accounts
+void transferMoney(Account *fromAccount, Account *toAccount) {
+    double amount;
+    printf("\nEnter amount you want to transfer: ");
+    scanf("%lf", &amount);
+    
+    if (amount > 0 && fromAccount->balance >= amount) {
+        fromAccount->balance -= amount;
+        toAccount->balance += amount;
+        printf("Transferred %.2f from account %s %s to account %s %s\n", amount, fromAccount->fname, fromAccount->lname, toAccount->fname, toAccount->lname);
+    }
+    else
+    {
+        printf("Insufficient balance or invalid transfer amount.\n");
+    }
+}
+
 // Function to check account balance
 void checkBalance(Account* account) {
     printf("Account %s %s balance: %.2f\n", account->fname, account->lname, account->balance);
@@ -132,6 +149,8 @@ int main()
         printf("\n4.... UNDO DEPOSIT");
         printf("\n5.... UNDO WITHDRAW");
         printf("\n6.... CHECK BALANCE");
+        printf("\n7.... TRANSFER MONEY BETWEEN 2 ACCOUNTS");
+        printf("\n8.... EXIT");
 
         printf("\nENTER YOUR CHOICE: ");
         scanf("%d", &choice);
@@ -181,10 +200,33 @@ int main()
             checkBalance(&accounts[accountIndex]);
             break;
         case 7:
+            if (numAccounts > 1) {
+                int fromIndex, toIndex;
+                printf("\nEnter the index of the account to transfer from (0 to %d): ", numAccounts - 1);
+                scanf("%d", &fromIndex);
+                printf("\nEnter the index of the account to transfer to (0 to %d): ", numAccounts - 1);
+                scanf("%d", &toIndex);
+                
+                // Validate selected account indices
+                if (fromIndex >= 0 && fromIndex < numAccounts && toIndex >= 0 && toIndex < numAccounts && fromIndex != toIndex)
+                {
+                    transferMoney(&accounts[fromIndex], &accounts[toIndex]);
+                }
+                else
+                {
+                    printf("Invalid account indices or same account selected.\n");
+                }
+            }
+            else
+            {
+                printf("Not enough accounts to perform a transfer.\n");
+            }
+            break;
+        case 8:
             printf("\nGoodbye!!!");
             break;
         }
-    } while(choice != 7);
+    } while(choice != 8);
 
     return 0;
 }
